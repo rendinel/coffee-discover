@@ -1,4 +1,8 @@
-import { table, getMinifiedRecords } from '../../lib/airtable'
+import {
+  table,
+  getMinifiedRecords,
+  findRecordByFilter,
+} from '../../lib/airtable'
 // const Airtable = require('airtable')
 // const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(
 //   process.env.AIRTABLE_BASE_KEY
@@ -11,19 +15,21 @@ const createCoffeeStore = async (req, res) => {
     const { id, name, neighbourhood, address, imgUrl, voting } = req.body
     try {
       if (id) {
-        const findCoffeeStoredRecords = await table
-          .select({
-            filterByFormula: `id="${id}"`,
-          })
-          .firstPage()
-        console.log({ findCoffeeStoredRecords })
-        if (findCoffeeStoredRecords.length !== 0) {
-          // const records = findCoffeeStoredRecords.map((record) => {
-          //   return {
-          //     ...record.fields,
-          //   }
-          // })
-          const records = getMinifiedRecords(findCoffeeStoredRecords)
+        // const findCoffeeStoredRecords = await table
+        //   .select({
+        //     filterByFormula: `id="${id}"`,
+        //   })
+        //   .firstPage()
+        // if (findCoffeeStoredRecords.length !== 0) {
+        //   const records = findCoffeeStoredRecords.map((record) => {
+        //     return {
+        //       ...record.fields,
+        //     }
+        //   })
+        //   const records = getMinifiedRecords(findCoffeeStoredRecords)
+        //   res.json(records)
+        const records = await findRecordByFilter(id)
+        if (records.length !== 0) {
           res.json(records)
         } else {
           if (name) {
